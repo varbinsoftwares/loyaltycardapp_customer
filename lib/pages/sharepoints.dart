@@ -234,7 +234,7 @@ class SharePointsPage extends State<SharePoints> {
                         ],
                       )),
                       Container(
-                        width: 150,
+                        width: 130,
                         margin: EdgeInsets.all(10),
                         child: TextFormField(
                           controller: inputpoints,
