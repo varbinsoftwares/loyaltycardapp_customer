@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:loyaltycard/core/uiwidget.dart';
 
 class ProductDetails extends StatefulWidget {
   final Map productobj;
@@ -9,6 +10,7 @@ class ProductDetails extends StatefulWidget {
 }
 
 class ProductDetailsState extends State<ProductDetails> {
+  UIWidget uiobj = UIWidget();
   Map productoptionsselect = {};
   List coloroptions = [];
   List optionslist = [];
@@ -69,13 +71,9 @@ class ProductDetailsState extends State<ProductDetails> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      productobj['title'],
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Divider(
-                      height: 20,
-                    ),
+                 
+                    uiobj.headingText(productobj['title'],fontSize: 15.0),
+                    Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -91,9 +89,7 @@ class ProductDetailsState extends State<ProductDetails> {
                             ))
                       ],
                     ),
-                    Divider(
-                      height: 20,
-                    ),
+                    Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -133,21 +129,28 @@ class ProductDetailsState extends State<ProductDetails> {
                 ),
               ),
               Divider(
-                height: 10,
+         
               ),
               Container(
                 margin: EdgeInsets.only(left: 20, right: 20),
                 width: double.infinity,
                 child: SingleChildScrollView(
-                  //  padding: EdgeInsets.all(10),
-                  child: Expanded(
-                      child: Text(
-                    productobj['description'],
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 20,
-                  )),
-                ),
+                    //  padding: EdgeInsets.all(10),
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    uiobj.headingText("Description"),
+                    Text(
+                      productobj['description'],
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 20,
+                      style: TextStyle(
+                        fontSize: 12.0,
+                      ),
+                    )
+                  ],
+                )),
               ),
             ]),
       ),

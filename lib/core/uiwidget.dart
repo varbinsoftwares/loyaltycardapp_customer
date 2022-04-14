@@ -3,7 +3,34 @@ import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class UIWidget {
-  ntworkImageWiget(conttext, imageurl, {minHeight=300}) {
+  styleText1(
+    txtstring, {
+    fontSize: 12.0,
+    fontWeight:FontWeight.normal,
+  }) {
+    return Text(
+      txtstring.toString(),
+      style: TextStyle(
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  headingText(
+    txtstring, {
+    fontSize: 12.0,
+  }) {
+    return Text(
+      txtstring.toString(),
+      style: TextStyle(
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  ntworkImageWiget(conttext, imageurl, {minHeight = 300}) {
     print(imageurl);
     return CachedNetworkImage(
       // height: 400,
@@ -17,7 +44,7 @@ class UIWidget {
       //   ),
       // ),
       placeholder: (context, url) => LinearProgressIndicator(
-        minHeight: minHeight*1.0,
+        minHeight: minHeight * 1.0,
         backgroundColor: Colors.white,
         color: Colors.grey.shade100,
       ),
