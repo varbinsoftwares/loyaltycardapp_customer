@@ -5,7 +5,7 @@ import 'dart:convert';
 import '../auth/profile.dart';
 import 'package:bottom_bar/bottom_bar.dart';
 import '../pages/mypoints.dart';
-import '../pages/category.dart';
+import 'ecom/category.dart';
 import '../pages/contact.dart';
 import '../pages/redeem.dart';
 import 'package:loyaltycard/core/uiwidget.dart';
@@ -14,6 +14,7 @@ import 'dart:convert';
 import 'package:loyaltycard/config.dart' as config;
 import 'package:loyaltycard/rewards/postlist.dart';
 import 'package:loyaltycard/pages/qrcode.dart';
+import 'package:icon_badge/icon_badge.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -109,16 +110,15 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           height: 40,
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => QRScreen(),
-                ),
-              );
+          IconBadge(
+            icon: Icon(Icons.shopping_cart_outlined),
+            itemCount: 3,
+            badgeColor: Colors.red,
+            itemColor: Colors.white,
+            hideZero: true,
+            onTap: () {
+              print('test');
             },
-            icon: FaIcon(FontAwesomeIcons.qrcode),
           ),
           IconButton(
             icon: FaIcon(FontAwesomeIcons.user),
@@ -173,13 +173,13 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               icon: CircleAvatar(
                 backgroundColor: Colors.red.shade500,
                 child: FaIcon(
-                  FontAwesomeIcons.home,
+                  FontAwesomeIcons.shoppingBag,
                   color: Colors.white,
                   size: 15,
                 ),
               ),
 
-              title: Text('Home'),
+              title: Text('Shopping'),
               activeColor: Colors.red,
               //darkActiveColor: Colors.red.shade400, // Optional
             ),

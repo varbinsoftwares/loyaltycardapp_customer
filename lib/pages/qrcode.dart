@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../auth/profile.dart';
 
 class QRScreen extends StatefulWidget {
   const QRScreen();
@@ -86,6 +87,19 @@ class QRScreenPage extends State<QRScreen> {
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
                           color: Colors.blue),
+                    ),
+                    ElevatedButton.icon(
+                      icon: Icon(Icons.edit),
+                      label: Text("Update Profile"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserProfile(),
+                          ),
+                        );
+                        // _handleLogout();
+                      },
                     ),
                     SizedBox(
                       height: 30,

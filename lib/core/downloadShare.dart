@@ -34,6 +34,7 @@ class ShareController {
     }
   }
 
+  //Share files
   Future shareLink() async {
     Map downloaddata = await this.downloadFile();
     Share.shareFiles(

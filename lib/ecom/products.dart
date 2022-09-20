@@ -83,16 +83,16 @@ class ProductListViewMainCatState extends State<ProductListViewMainCat> {
   _getProductList(int startpage) async {
     String filteroption = filterselect.toString().split('.').last;
     final String category_id = widget.categoryobjmain["category_id"];
- 
 
-    String apiurl = ecom_apiendpoint + "/getProductsList/$category_id/20/$startpage";
+    String apiurl =
+        ecom_apiendpoint + "/getProductsList/$category_id/20/$startpage";
     print(apiurl);
     final http.Response response = await http.get(Uri.parse(apiurl));
     if (response.statusCode == 200) {
-       productslist = jsonDecode(response.body);
-       setState(() {
-         category_nav = productslist[0]["category_nav"];
-       });
+      productslist = jsonDecode(response.body);
+      setState(() {
+        category_nav = productslist[0]["category_nav"];
+      });
       return productslist;
     } else {
       return [];
@@ -255,7 +255,7 @@ class ProductListViewMainCatState extends State<ProductListViewMainCat> {
                 );
               },
               child: Hero(
-                tag: "product"+productinfo["id"],
+                tag: "product" + productinfo["id"],
                 child: FadeInImage(
                   height: 170,
                   placeholder: AssetImage('assets/placeholder.jpg'),
@@ -281,31 +281,25 @@ class ProductListViewMainCatState extends State<ProductListViewMainCat> {
           Container(
               // height: 20,
               child: Center(
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(
-                    productinfo["price"],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  )
-                ]),
-              )),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                productinfo["price"],
+                textAlign: TextAlign.center,
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              )
+            ]),
+          )),
         ],
       ),
     );
   }
 
-
   Widget build(BuildContext context) {
     final Map categoryobj = widget.categoryobjmain;
     return Scaffold(
       appBar: AppBar(
-        title:Text(
-                category_nav,
-                style: TextStyle(fontSize:12)
-              ),
-      
+        title: Text(category_nav, style: TextStyle(fontSize: 12)),
       ),
       backgroundColor: Colors.grey[100],
       body: RefreshIndicator(

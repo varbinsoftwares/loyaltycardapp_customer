@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'redeem.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:loyaltycard/core/uiwidget.dart';
+import 'package:cool_alert/cool_alert.dart';
+import '../config.dart';
 
 class SharePoints extends StatefulWidget {
   final String mob_card_no;
@@ -104,58 +106,51 @@ class SharePointsPage extends State<SharePoints> {
     int numbertext =
         inputtxt.isNotEmpty ? int.parse(inputpoints.text.toString()) : 0;
     String numberstr = (numbertext / 2).toString();
+    String username = userprofile["contact_no"].toString();
+    String receivername = serchuserprofile["contact_no"].toString();
     Map jsonData = {
-      "share_points": numberstr,
+      "point_debit": numbertext.toString(),
+      "points": numberstr,
+      "description": "$numberstr Points has been shared by $username",
+      "user_id": serchuserprofile["id"].toString(),
       "sender_id": userprofile["id"].toString(),
-      "receiver_id": serchuserprofile["id"].toString()
+      "sender_description":
+          "$numbertext Points has been shared to $receivername",
+      "point_type": "Credit"
     };
+    CoolAlert.show(
+      context: context,
+      type: CoolAlertType.loading,
+      text: "Sharing Points",
+    );
     print(jsonData);
-    // String apilogin = config.apiendpoint + "/registration";
-    // print(apilogin);
-    // var response = await http.post(
-    //   Uri.parse(apilogin),
-    //   body: jsonData,
-    // );
-    // print(response.body);
-    // if (response.statusCode == 200) {
-    //   print(response.body);
-    //   Map registration = jsonDecode(response.body);
-    //   print(registration);
+    String apilogin = apiendpoint + "/sharePoints";
+    print(apilogin);
+    var response = await http.post(
+      Uri.parse(apilogin),
+      body: jsonData,
+    );
+    if (response.statusCode == 200) {
+      Map registration = jsonDecode(response.body);
+      setState(() {
+        sharingstatus = true;
+      });
 
-    //   switch (registration['status'].toString()) {
-    //     case "401":
-    //       {
-    //         messageDialog(context, "Unable to login", 'Login Failed', false);
-    //       }
-    //       break;
-    //     case "200":
-    //       {
-    //         SharedPreferences prefs = await SharedPreferences.getInstance();
-    //         var profiledata = jsonEncode(registration['userdata']);
-    //         print(profiledata);
-    //         prefs.setString("profile", profiledata).then((value) {
-    //           print(value);
-    //           messageDialog(
-    //               context,
-    //               "Welcome to Ayushi Electronics, You have logged in successfully",
-    //               'Login Success',
-    //               true);
-    //         });
-    //       }
-    //       break;
-    //     default:
-    //       {}
-    //       break;
-    //   }
-
-    //   setState(() {
-    //     checklogin = true;
-    //   });
-    // } else {
-    //   setState(() {
-    //     checklogin = true;
-    //   });
-    // }
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.success,
+        text: "$numberstr Points has been shared.",
+      );
+    } else {
+      setState(() {
+        sharingstatus = true;
+      });
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        text: "Failed to share points",
+      );
+    }
   }
 
   final _formKey = GlobalKey<FormState>();
