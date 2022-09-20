@@ -20,7 +20,7 @@ class Category extends StatefulWidget {
 }
 
 class CategoryPage extends State<Category> with AutomaticKeepAliveClientMixin {
-    @override
+  @override
   bool get wantKeepAlive => true;
   static const routeName = 'categorypage';
   bool loadingorder = true;
@@ -77,71 +77,67 @@ class CategoryPage extends State<Category> with AutomaticKeepAliveClientMixin {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: SingleChildScrollView(
-        child: Column(children:[
+        child: Column(children: [
           Container(
               child: CarouselSlider(
-            options: CarouselOptions(height: 150.0, aspectRatio: 100/50, viewportFraction:1,autoPlay: true),
+            options: CarouselOptions(
+                height: 200.0,
+                aspectRatio: 100 / 50,
+                viewportFraction: 1,
+                autoPlay: true),
             items: [1, 2].map((i) {
               return Builder(
                 builder: (BuildContext context) {
                   return Container(
-                    margin: EdgeInsets.only(left:5, right:5),
+                      margin: EdgeInsets.only(left: 5, right: 5),
                       decoration: BoxDecoration(
-                      color: Colors.white,
-                    
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      boxShadow: [
-                     
-                      ]),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          boxShadow: []),
                       width: MediaQuery.of(context).size.width,
-         
-         
-                      child: Image.asset("assets/slider$i.webp"));
+                      child: Image.asset("assets/slider$i.jpg"));
                 },
               );
             }).toList(),
           )),
-           Container(
-             height: 500,
-          width: double.infinity,
-          padding: const EdgeInsets.all(5),
-          child: categoryloade2
-              ? Column(
-                children: [
-                  Flexible(
-                    child: CategoryList(),
-
-
+          Container(
+            height: 500,
+            width: double.infinity,
+            padding: const EdgeInsets.all(5),
+            child: categoryloade2
+                ? Column(
+                    children: [
+                      Flexible(
+                        child: CategoryList(),
+                      )
+                    ],
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                    // children: List.generate(
+                    //   categorylist2.length,
+                    //   (index) {
+                    //     int colorindex = index % 6;
+                    //     List subcategory = categorylist2[index]["sub_category"];
+                    //     var colorcode = colorlist[colorindex];
+                    //     String categoryid = categorylist2[index]["category_id"];
+                    //     return Container(
+                    //          child: Text("data"),
+                    //     );
+                    //   },
+                    // ),
                   )
-                 
-                ],
-                  // mainAxisAlignment: MainAxisAlignment.start,
-                  // children: List.generate(
-                  //   categorylist2.length,
-                  //   (index) {
-                  //     int colorindex = index % 6;
-                  //     List subcategory = categorylist2[index]["sub_category"];
-                  //     var colorcode = colorlist[colorindex];
-                  //     String categoryid = categorylist2[index]["category_id"];
-                  //     return Container(
-                  //          child: Text("data"),
-                  //     );
-                  //   },
-                  // ),
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 150),
-                      child: CircularProgressIndicator(),
-                    ),
-                  ],
-                ),
-        )]),
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 150),
+                        child: CircularProgressIndicator(),
+                      ),
+                    ],
+                  ),
+          )
+        ]),
       ),
     );
   }

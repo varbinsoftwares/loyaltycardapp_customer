@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class UIWidget {
   styleText1(
     txtstring, {
     fontSize: 12.0,
-    fontWeight:FontWeight.normal,
+    fontWeight: FontWeight.normal,
   }) {
     return Text(
       txtstring.toString(),
@@ -666,5 +667,238 @@ class UIWidget {
       final String formatted = formatter.format(pickedDate);
       return formatted;
     });
+  }
+
+  Widget userCardProfile(
+    userprofile,
+    pointdata, {
+    onpressed: null,
+  }) {
+    return this.userCard(
+        name: userprofile['name'].toString(),
+        card_no: userprofile["usercode"].toString(),
+        imageurl: userprofile["profile_image"].toString(),
+        contact_no: userprofile['contact_no'].toString(),
+        onpressed: onpressed,
+        widgetlist: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            this.pointTextBlock(
+                title: "Total Points",
+                points: pointdata['totalremain'].toString()),
+            this.pointTextBlock(
+                title: "Point Used", points: pointdata["debitsum"].toString()),
+          ],
+        ));
+  }
+
+  Widget userCard(
+      {required String imageurl,
+      required String name,
+      required String card_no,
+      required String contact_no,
+      required Widget widgetlist,
+      onpressed: null,
+      height: 230}) {
+    return Container(
+      height: height * 1.0,
+      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+      width: double.infinity,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          boxShadow: [
+            // BoxShadow(
+            //   color: Colors.grey.shade400,
+            //   blurRadius: 20.0, // soften the shadow
+            //   spreadRadius: -5.0,
+            // ),
+          ]),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 150,
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.purple,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0),
+                          topRight: Radius.circular(20.0)),
+                      image: DecorationImage(
+                        image: AssetImage("assets/abs-background.jpg"),
+                        fit: BoxFit.cover,
+                      )),
+                  height: 80,
+                ),
+                Positioned(
+                  left: 10,
+                  top: 30,
+                  child: Container(
+                    // tag: "contactlist" + userprofile["id"].toString(),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100.0),
+                      child: FadeInImage(
+                        height: 100,
+                        width: 100,
+                        // here `bytes` is a Uint8List containing the bytes for the in-memory image
+                        placeholder: AssetImage(
+                          "assets/tick.png",
+                        ),
+                        image: NetworkImage(imageurl
+                            // userprofile["profile_image"].toString(),
+                            ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 10,
+                  top: 13,
+                  child: Text(
+                    "Card No.",
+                    // userprofile["usercode"].toString(),
+                    style: this.smallTextStyle(color: Colors.white),
+                  ),
+                ),
+                Positioned(
+                  right: 10,
+                  top: 30,
+                  child: Text(
+                    card_no,
+                    // userprofile["usercode"].toString(),
+                    style: this.mainHeadingStyleCN(),
+                  ),
+                ),
+                Positioned(
+                  right: 10,
+                  top: 30,
+                  child: Text(
+                    card_no,
+                    // userprofile["usercode"].toString(),
+                    style: this.mainHeadingStyleCN(),
+                  ),
+                ),
+                Positioned(
+                  right: 10,
+                  top: 85,
+                  child: TextButton(
+                    onPressed: onpressed,
+                    child: QrImage(
+                      data: card_no,
+                      version: QrVersions.auto,
+                      size: 50.0,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 120,
+                  top: 100,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 5),
+                        child: Text(
+                          name.toUpperCase(),
+                          // userprofile['name'].toString().toUpperCase(),
+                          style: this.mainHeadingStyle15(),
+                        ),
+                      ),
+                      Divider(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.blue.shade300,
+                            radius: 10,
+                            child: Icon(
+                              Icons.call,
+                              size: 12,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            // userprofile['contact_no'],
+                            contact_no,
+                            style: TextStyle(
+                                fontSize: 15, color: Colors.grey.shade800),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
+            child: widgetlist,
+          )
+        ],
+      ),
+    );
+  }
+
+  TextStyle mainHeadingStyle15() {
+    return TextStyle(
+      fontSize: 15,
+      color: Colors.deepPurple,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  TextStyle mainHeadingStyleCN() {
+    return TextStyle(
+      fontSize: 25,
+      fontFamily: "Mono",
+      color: Color.fromARGB(255, 255, 255, 255),
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  TextStyle pontTextStye() {
+    return TextStyle(
+        fontSize: 30,
+        fontWeight: FontWeight.bold,
+        color: Color.fromARGB(255, 245, 23, 23));
+  }
+
+  TextStyle smallTextStyle({Color color = Colors.black}) {
+    return TextStyle(
+      fontSize: 10,
+      color: color,
+    );
+  }
+
+  Widget pointTextBlock({String title = '', String points = ''}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          title,
+          style: this.smallTextStyle(),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              points, //  pointdata["debitsum"].toString() + "",
+              style: this.pontTextStye(),
+            ),
+          ],
+        )
+      ],
+    );
   }
 }

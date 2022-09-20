@@ -8,6 +8,8 @@ import 'redeem.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'sharepoints.dart';
 import 'package:loyaltycard/rewards/qrcodescan.dart';
+import 'package:loyaltycard/core/uiwidget.dart';
+import 'package:loyaltycard/pages/qrcode.dart';
 
 class MyPoints extends StatefulWidget {
   const MyPoints({Key? key}) : super(key: key);
@@ -23,6 +25,8 @@ class MyPointsPage extends State<MyPoints> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
 
   static const routeName = 'points';
+
+  UIWidget uiobj = UIWidget();
 
   Map userprofile = {};
   bool userloggein = false;
@@ -60,7 +64,7 @@ class MyPointsPage extends State<MyPoints> with AutomaticKeepAliveClientMixin {
   _loadUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userprofiletemp = (prefs.getString('profile') ?? "");
-    //print(userprofiletemp);
+    print(userprofiletemp);
     setState(() {
       if (userprofiletemp.isNotEmpty) {
         userprofile = jsonDecode(userprofiletemp);
@@ -123,6 +127,15 @@ class MyPointsPage extends State<MyPoints> with AutomaticKeepAliveClientMixin {
     );
   }
 
+  void qrPopupShow(String code) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QRScreen(),
+      ),
+    );
+  }
+
   Widget build(BuildContext context) {
     final double _screenHeight = MediaQuery.of(context).size.height * 1.0;
     return Scaffold(
@@ -135,211 +148,15 @@ class MyPointsPage extends State<MyPoints> with AutomaticKeepAliveClientMixin {
               child: Column(
             children: [
               userloggein
-                  ? Container(
-                      // height: 200,
-                      margin: EdgeInsets.only(
-                          left: 10, right: 10, bottom: 10, top: 10),
-                      // padding: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          boxShadow: [
-                            // BoxShadow(
-                            //   color: Colors.grey.shade400,
-                            //   blurRadius: 20.0, // soften the shadow
-                            //   spreadRadius: -5.0,
-                            // ),
-                          ]),
-                      child: InkWell(
-                        //onTap: onpofiletap,
-                        child: Stack(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.purple,
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20.0),
-                                      topRight: Radius.circular(20.0)),
-                                  image: DecorationImage(
-                                    image:
-                                        AssetImage("assets/abs-background.jpg"),
-                                    // image: NetworkImage(
-                                    //     "https://picsum.photos/200/300/?blur=" +
-                                    //         userprofile["id"].toString()),
-                                    fit: BoxFit.cover,
-                                  )),
-                              height: 80,
-                            ),
-                            Column(
-                              children: [
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  // tag: "contactlist" + userprofile["id"].toString(),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    // child: Image.asset(
-                                    //   "assets/tick.png",
-                                    //   height: 100,
-                                    //   width: 100,
-                                    // ),
-                                    child: FadeInImage(
-                                      height: 100,
-                                      width: 100,
-                                      // here `bytes` is a Uint8List containing the bytes for the in-memory image
-                                      placeholder: AssetImage(
-                                        "assets/tick.png",
-                                      ),
-                                      image: NetworkImage(
-                                          userprofile["profile_image"]
-                                              .toString()),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.only(
-                                        left: 15, right: 15, bottom: 10),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Container(
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.pinkAccent,
-                                                    gradient: LinearGradient(
-                                                        colors: [
-                                                          Colors.green.shade500,
-                                                          Colors.lightGreen,
-                                                        ],
-                                                        begin:
-                                                            const FractionalOffset(
-                                                                0.0, 0.8),
-                                                        end:
-                                                            const FractionalOffset(
-                                                                0.0, 0.1),
-                                                        stops: [0.0, 1.0],
-                                                        tileMode:
-                                                            TileMode.clamp),
-                                                    boxShadow: []),
-                                                child: CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  child: Text(
-                                                      pointdata['totalremain']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 20)),
-                                                )),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(
-                                              "Total Points",
-                                              style: TextStyle(
-                                                fontSize: 10,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              userprofile['name']
-                                                  .toString()
-                                                  .toUpperCase(),
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.deepPurple,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Divider(
-                                              height: 5,
-                                            ),
-                                            Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  backgroundColor:
-                                                      Colors.blue.shade300,
-                                                  radius: 10,
-                                                  child: Icon(
-                                                    Icons.call,
-                                                    size: 12,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 5,
-                                                ),
-                                                Text(
-                                                  userprofile['contact_no'],
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      color:
-                                                          Colors.grey.shade800),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Point Used",
-                                              style: TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  pointdata["debitsum"]
-                                                          .toString() +
-                                                      "",
-                                                  style: TextStyle(
-                                                      fontSize: 25,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color:
-                                                          Colors.yellow[900]),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    )),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
+                  ? uiobj.userCardProfile(userprofile, pointdata,
+                      onpressed: () =>
+                          qrPopupShow(userprofile["usercode"].toString()))
                   : Container(),
               Container(
                 child: show_point_sharebutton
                     ? ElevatedButton.icon(
                         onPressed: () {
+                          // _loadUserInfo();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -348,14 +165,6 @@ class MyPointsPage extends State<MyPoints> with AutomaticKeepAliveClientMixin {
                                       pointdata["totalremain"].toString()),
                             ),
                           );
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => SharePoints(
-                          //       totalpoints: pointdata['totalremain'].toString(),
-                          //     ),
-                          //   ),
-                          // );
                         },
                         icon: Icon(Icons.share),
                         label: Text("Share Points"))
@@ -368,7 +177,7 @@ class MyPointsPage extends State<MyPoints> with AutomaticKeepAliveClientMixin {
                 child: SingleChildScrollView(
                   child: Column(
                     children: List.generate(
-                      pointlist.length, 
+                      pointlist.length,
                       (i) {
                         Map pointObj = pointlist[i];
                         bool iscredit = pointObj.containsKey("point_type")

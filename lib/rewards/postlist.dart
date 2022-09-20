@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:loyaltycard/core/uiwidget.dart';
+import 'package:loyaltycard/core/downloadShare.dart';
 
 class PostList extends StatefulWidget {
   @override
@@ -46,6 +47,7 @@ class PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
 
   Map userprofile = {};
   bool userloggein = false;
+  bool isSharing = true;
   @override
   void initState() {
     super.initState();
@@ -222,16 +224,23 @@ class PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 ElevatedButton.icon(
-                                    onPressed:likeloaing ? () =>
-                                        _likePost(postindex, productinfo["id"]):null,
+                                    onPressed: likeloaing
+                                        ? () => _likePost(
+                                            postindex, productinfo["id"])
+                                        : null,
                                     icon: Icon(Icons.thumb_up),
-                                    label: Text(likeloaing ?  "Like (" +
-                                        productinfo["likes"].toString() +
-                                        ")" : "Liking.." )),
+                                    label: Text(likeloaing
+                                        ? "Like (" +
+                                            productinfo["likes"].toString() +
+                                            ")"
+                                        : "Liking..")),
                                 ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed: isSharing
+                                        ? () => shareButton(productinfo)
+                                        : null,
                                     icon: Icon(Icons.share),
-                                    label: Text("Share")),
+                                    label:
+                                        Text(isSharing ? "Share" : "Sharing")),
                               ],
                             )
                           ],
@@ -240,6 +249,23 @@ class PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
                 ),
               )),
         ]));
+  }
+
+  Future<void> shareButton(productinfo) async {
+    setState(() {
+      isSharing = false;
+    });
+    ShareController shareobj = ShareController(
+      imageurl: productinfo["images"].toString(),
+      content: productinfo["description"].toString() +
+          "\n\nहमारी LOYALTY PARTNER CARD ऐप अभी डाउनलोड करे\n",
+      storelink:
+          "https://play.google.com/store/apps/details?id=com.varbin.loyaltycard&hl=en_IN&gl=US",
+    );
+    await shareobj.shareLink();
+    setState(() {
+      isSharing = true;
+    });
   }
 
   Widget build(BuildContext context) {

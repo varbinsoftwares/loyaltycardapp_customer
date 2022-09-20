@@ -289,18 +289,14 @@ class _RegistrationState extends State<Registration>
             child: Padding(
               padding: EdgeInsets.only(right: 10.0),
               child: Container(
-                  child: new RaisedButton(
+                  child: new ElevatedButton(
                 child: new Text("Save"),
-                textColor: Colors.white,
-                color: Colors.green,
                 onPressed: () {
                   setState(() {
                     _status = true;
                     FocusScope.of(context).requestFocus(new FocusNode());
                   });
                 },
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(20.0)),
               )),
             ),
             flex: 2,
@@ -309,18 +305,14 @@ class _RegistrationState extends State<Registration>
             child: Padding(
               padding: EdgeInsets.only(left: 10.0),
               child: Container(
-                  child: new RaisedButton(
+                  child: new ElevatedButton(
                 child: new Text("Cancel"),
-                textColor: Colors.white,
-                color: Colors.red,
                 onPressed: () {
                   setState(() {
                     _status = true;
                     FocusScope.of(context).requestFocus(new FocusNode());
                   });
                 },
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(20.0)),
               )),
             ),
             flex: 2,
@@ -769,7 +761,10 @@ class _RegistrationState extends State<Registration>
                 ]),
             // height: _screenHeight - 150,
             child: Column(children: [
-              Text("Plumber Registration", style: TextStyle(fontSize: 20),),
+              Text(
+                "Plumber Registration",
+                style: TextStyle(fontSize: 20),
+              ),
               Divider(),
               Container(child: _buildTextFields())
             ]),

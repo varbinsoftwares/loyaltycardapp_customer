@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:loyaltycard/config.dart' as config;
 import 'package:loyaltycard/rewards/postlist.dart';
+import 'package:loyaltycard/pages/qrcode.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -108,7 +109,17 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           height: 40,
         ),
         actions: [
-          
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => QRScreen(),
+                ),
+              );
+            },
+            icon: FaIcon(FontAwesomeIcons.qrcode),
+          ),
           IconButton(
             icon: FaIcon(FontAwesomeIcons.user),
             tooltip: '',

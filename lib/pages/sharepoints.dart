@@ -7,6 +7,7 @@ import '../config.dart';
 import 'package:http/http.dart' as http;
 import 'redeem.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:loyaltycard/core/uiwidget.dart';
 
 class SharePoints extends StatefulWidget {
   final String mob_card_no;
@@ -22,7 +23,7 @@ class SharePoints extends StatefulWidget {
 class SharePointsPage extends State<SharePoints> {
   static const routeName = 'sharepoints';
   TextEditingController inputpoints = new TextEditingController();
-
+  UIWidget uiobj = UIWidget();
   @override
   void initState() {
     super.initState();
@@ -94,6 +95,69 @@ class SharePointsPage extends State<SharePoints> {
     }
   }
 
+  bool sharingstatus = true;
+  _sharePoint() async {
+    String inputtxt = inputpoints.text;
+    setState(() {
+      sharingstatus = false;
+    });
+    int numbertext =
+        inputtxt.isNotEmpty ? int.parse(inputpoints.text.toString()) : 0;
+    String numberstr = (numbertext / 2).toString();
+    Map jsonData = {
+      "share_points": numberstr,
+      "sender_id": userprofile["id"].toString(),
+      "receiver_id": serchuserprofile["id"].toString()
+    };
+    print(jsonData);
+    // String apilogin = config.apiendpoint + "/registration";
+    // print(apilogin);
+    // var response = await http.post(
+    //   Uri.parse(apilogin),
+    //   body: jsonData,
+    // );
+    // print(response.body);
+    // if (response.statusCode == 200) {
+    //   print(response.body);
+    //   Map registration = jsonDecode(response.body);
+    //   print(registration);
+
+    //   switch (registration['status'].toString()) {
+    //     case "401":
+    //       {
+    //         messageDialog(context, "Unable to login", 'Login Failed', false);
+    //       }
+    //       break;
+    //     case "200":
+    //       {
+    //         SharedPreferences prefs = await SharedPreferences.getInstance();
+    //         var profiledata = jsonEncode(registration['userdata']);
+    //         print(profiledata);
+    //         prefs.setString("profile", profiledata).then((value) {
+    //           print(value);
+    //           messageDialog(
+    //               context,
+    //               "Welcome to Ayushi Electronics, You have logged in successfully",
+    //               'Login Success',
+    //               true);
+    //         });
+    //       }
+    //       break;
+    //     default:
+    //       {}
+    //       break;
+    //   }
+
+    //   setState(() {
+    //     checklogin = true;
+    //   });
+    // } else {
+    //   setState(() {
+    //     checklogin = true;
+    //   });
+    // }
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   Widget memeberStatusLoading(statuscode) {
@@ -102,47 +166,16 @@ class SharePointsPage extends State<SharePoints> {
         return SizedBox(height: 10);
         break;
       case "200":
-        return Card(
-            child: ListTile(
-          contentPadding: EdgeInsets.all(15),
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(100.0),
-            child: FadeInImage(
-              height: 60,
-              width: 60,
-              // here `bytes` is a Uint8List containing the bytes for the in-memory image
-              placeholder: AssetImage(
-                "assets/tick.png",
-              ),
-              image: NetworkImage(serchuserprofile["profile_image"].toString()),
-              fit: BoxFit.cover,
-            ),
-          ),
-          title: Text(
-            serchuserprofile["name"].toString(),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-          ),
-          subtitle: Text(
-            serchuserprofile["contact_no"].toString(),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-          ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                serchuserprofile["usercode"].toString(),
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: Colors.blueAccent),
-              ),
-              Text(
-                "USERCODE",
-                style: TextStyle(fontSize: 12),
-              )
-            ],
-          ),
-        ));
+        return uiobj.userCard(
+            imageurl: serchuserprofile["profile_image"].toString(),
+            name: serchuserprofile["name"].toString(),
+            card_no: serchuserprofile["usercode"].toString(),
+            contact_no: serchuserprofile["contact_no"].toString(),
+            height: 180,
+            widgetlist: Container(
+              height: 10,
+            ));
+
       default:
         return Card(
             child: ListTile(
@@ -158,6 +191,13 @@ class SharePointsPage extends State<SharePoints> {
         inputtxt.isNotEmpty ? int.parse(inputpoints.text.toString()) : 0;
     print(numbertext % 2);
     if (numbertext % 2 == 0) {
+      String userpoint = widget.userpoints.toString();
+      int numberuserpoint =
+          userpoint.isNotEmpty ? int.parse(userpoint.toString()) : 0;
+      print(numbertext > numberuserpoint);
+      if (numbertext > numberuserpoint) {
+        return true;
+      }
       return false;
     } else {
       return true;
@@ -244,7 +284,7 @@ class SharePointsPage extends State<SharePoints> {
                               const InputDecoration(hintText: "Points Here"),
                           validator: (value) {
                             if (checkNumber()) {
-                              return 'Please enter even no.';
+                              return 'Please enter valid no.';
                             }
                             return null;
                           },
@@ -255,7 +295,7 @@ class SharePointsPage extends State<SharePoints> {
                             onPressed: checkuserData
                                 ? () {
                                     if (_formKey.currentState!.validate()) {
-                                      _searchUser();
+                                      _sharePoint();
                                     }
                                   }
                                 : null,
@@ -302,6 +342,23 @@ class SharePointsPage extends State<SharePoints> {
                           text: ' 50%',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       TextSpan(text: ' points will be shared to anohter one.'),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                  height: 5,
+                ),
+                RichText(
+                  textAlign: TextAlign.left,
+                  text: TextSpan(
+                    style: TextStyle(fontSize: 15, color: Colors.black),
+                    children: <TextSpan>[
+                      TextSpan(text: '2) You can only share less then '),
+                      TextSpan(
+                          text: widget.userpoints.toString(),
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: ' points.'),
                     ],
                   ),
                 )

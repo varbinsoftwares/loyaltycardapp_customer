@@ -7,7 +7,7 @@ import 'package:loyaltycard/config.dart' as config;
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:convert';
-import 'package:scan/scan.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter/cupertino.dart';
 import '../rewards/rewardsceen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,17 +25,22 @@ class QrcodeScan extends StatefulWidget {
 class _QrcodeScanState extends State<QrcodeScan> {
   String _platformVersion = 'Unknown';
 
-  ScanController controller = ScanController();
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  Barcode? result;
+  QRViewController? controller;
   String qrcode = 'Unknown';
   bool flashon = false;
 
   @override
   void initState() {
+    controller?.resumeCamera();
+
     super.initState();
   }
 
   @override
   void dispose() {
+    controller?.dispose();
     super.dispose();
   }
 
@@ -70,7 +75,7 @@ class _QrcodeScanState extends State<QrcodeScan> {
             onPressed: () {
               if (title == 'Wrong Code') {
                 Navigator.of(context).pop();
-                controller.resume();
+                controller?.resumeCamera();
               } else {}
             },
           )
@@ -80,16 +85,24 @@ class _QrcodeScanState extends State<QrcodeScan> {
   }
 
   openPassDetails(passid) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SharePoints(
-          userpoints: widget.userpoints.toString(),
-          mob_card_no: passid.toString(),
-        ),
-      ),
-    );
-    controller.resume();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => SharePoints(
+                  userpoints: widget.userpoints.toString(),
+                  mob_card_no: passid.toString(),
+                )),
+        ModalRoute.withName('home'));
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => SharePoints(
+    //       userpoints: widget.userpoints.toString(),
+    //       mob_card_no: passid.toString(),
+    //     ),
+    //   ),
+    // );
+    controller?.resumeCamera();
   }
 
   //manual feed data
@@ -144,7 +157,37 @@ class _QrcodeScanState extends State<QrcodeScan> {
 //end of pincode functionF
 
   @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller!.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller!.resumeCamera();
+    }
+  }
+
+  void _onQRViewCreated(QRViewController controller) {
+    print(controller);
+    controller.resumeCamera();
+    setState(() {
+      this.controller = controller;
+    });
+
+    controller.scannedDataStream.listen((event) {
+      controller.stopCamera().then((e) {
+        openPassDetails(event.code);
+      });
+
+      print("${event.code}");
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var scanArea = (MediaQuery.of(context).size.width < 400 ||
+            MediaQuery.of(context).size.height < 400)
+        ? 150.0
+        : 300.0;
     return Scaffold(
       appBar: AppBar(
         title: Text("Search User"),
@@ -169,17 +212,26 @@ class _QrcodeScanState extends State<QrcodeScan> {
               height: 20,
             ),
             Container(
-              width: 250,
-              height: 250,
-              child: ScanView(
-                controller: controller,
-                scanAreaScale: .8,
-                scanLineColor: Colors.grey,
-                onCapture: (data) {
-                  openPassDetails(data);
-                },
-              ),
-            ),
+                width: 250,
+                height: 250,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromARGB(255, 0, 0, 0), spreadRadius: 3),
+                  ],
+                ),
+                child: QRView(
+                  key: qrKey,
+                  onQRViewCreated: _onQRViewCreated,
+                  overlay: QrScannerOverlayShape(
+                      borderColor: Colors.red,
+                      borderRadius: 10,
+                      borderLength: 30,
+                      borderWidth: 10,
+                      cutOutSize: scanArea),
+                )),
 
             ElevatedButton.icon(
               icon: flashon ? Icon(Icons.flash_off) : Icon(Icons.flash_on),
@@ -193,7 +245,7 @@ class _QrcodeScanState extends State<QrcodeScan> {
                         side: BorderSide(color: Colors.blueGrey))),
               ),
               onPressed: () {
-                controller.toggleTorchMode();
+                controller?.toggleFlash();
                 setState(() {
                   flashon = !flashon;
                 });
