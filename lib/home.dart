@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +17,9 @@ import 'package:loyaltycard/config.dart' as config;
 import 'package:loyaltycard/rewards/postlist.dart';
 import 'package:loyaltycard/pages/qrcode.dart';
 import 'package:icon_badge/icon_badge.dart';
+import "package:loyaltycard/ecom/model/cartModel.dart";
+import "package:loyaltycard/ecom/cart.dart";
+import "package:loyaltycard/ecom/orderReports.dart";
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -30,10 +35,35 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   int _currentPage = 0;
   final _pageController = PageController();
   UIWidget uiobj = UIWidget();
+  CartModel cardobj = CartModel();
+  CartDetails cartdetails = CartDetails.fromMap({
+    'cartproducts': {},
+    'totalQuantity': 0,
+    'totalAmount': 0,
+    'shipping': 0,
+    'couponDiscount': 0,
+    'couponCode': "",
+    'grandTotal': 0,
+  });
   @override
   void initState() {
     super.initState();
+    initCart();
+    Timer.periodic(new Duration(seconds: 10), (timer) {
+      initCart();
+    });
     _loadUserInfo();
+  }
+
+  initCart() async {
+    CartDetails cartdetails2 = await cardobj.details();
+    setState(() {
+      cartdetails = cartdetails2;
+    });
+  }
+
+  cartChanges(value) {
+    print(value);
   }
 
   Map userprofile = {};
@@ -103,6 +133,111 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   final icons = [Icons.ac_unit, Icons.access_alarm, Icons.access_time];
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+
+          children: [
+            Container(
+              height: 200,
+              color: Colors.white,
+              padding: EdgeInsets.all(10),
+              child: Image.asset('assets/headerimage.png'),
+            ),
+
+            // Image.asset("assets/sketch.png"),
+            ListTile(
+              contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 20),
+              leading: Icon(Icons.shopping_cart_outlined),
+              title:
+                  const Text('Shopping Cart', style: TextStyle(fontSize: 18)),
+              onTap: () {
+                // Update the state of the app.
+                // ...systemLog
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Cart(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 20),
+              leading: Icon(Icons.list),
+              title:
+                  const Text('Order Reports', style: TextStyle(fontSize: 18)),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OrderReports(
+                      user_id: userprofile["id"],
+                    ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 20),
+              title: const Text('My Points', style: TextStyle(fontSize: 18)),
+              leading: Icon(Icons.wallet_giftcard),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyPoints(navigation: true),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 20),
+              title: const Text('My Card', style: TextStyle(fontSize: 18)),
+              leading: Icon(Icons.credit_card),
+              onTap: () {
+                // Update the state of the app.
+                // ...customerReports
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QRScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 20),
+              title: const Text('User Profile', style: TextStyle(fontSize: 18)),
+              leading: Icon(Icons.person),
+              onTap: () {
+                // Update the state of the app.
+                // ...systemLog
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserProfile(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         elevation: 0,
         title: Image.asset(
@@ -112,12 +247,18 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         actions: [
           IconBadge(
             icon: Icon(Icons.shopping_cart_outlined),
-            itemCount: 3,
+            itemCount: cartdetails.totalQuantity,
             badgeColor: Colors.red,
             itemColor: Colors.white,
             hideZero: true,
-            onTap: () {
-              print('test');
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Cart(),
+                ),
+              );
+              initCart();
             },
           ),
           IconButton(
@@ -127,7 +268,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UserProfile(),
+                  builder: (context) => QRScreen(),
                 ),
               );
               // _handleLogout();

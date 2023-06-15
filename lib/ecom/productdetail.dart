@@ -1,7 +1,10 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:loyaltycard/core/uiwidget.dart';
 import 'package:loyaltycard/ecom/model/cartModel.dart';
+
+import 'cart.dart';
 
 class ProductDetails extends StatefulWidget {
   final Map<String, dynamic> productobj;
@@ -166,7 +169,20 @@ class ProductDetailsState extends State<ProductDetails> {
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                   ),
                 ),
-                onPressed: () => {cartobj.add(productobj)},
+                onPressed: () async {
+                  await cartobj.add(productobj);
+                  CoolAlert.show(
+                    context: context,
+                    type: CoolAlertType.success,
+                    text: "Product has been added to cart",
+                    widget: FadeInImage(
+                      height: 100,
+                      placeholder: AssetImage('assets/icon.png'),
+                      image: NetworkImage(productobj["image"]),
+                      fit: BoxFit.contain,
+                    ),
+                  );
+                },
                 label: Text(
                   "Add To Cart",
                   style: TextStyle(fontSize: 18),
@@ -180,7 +196,14 @@ class ProductDetailsState extends State<ProductDetails> {
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                   ),
                 ),
-                onPressed: () => {},
+                onPressed: () async {
+                  await cartobj.add(productobj);
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => Cart()),
+                      ModalRoute.withName('home'));
+                },
                 label: Text(
                   "Buy Now",
                   style: TextStyle(fontSize: 18),

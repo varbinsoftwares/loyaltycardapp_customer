@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loyaltycard/ecom/orderReports.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -56,13 +57,12 @@ class QRScreenPage extends State<QRScreen> {
                     SizedBox(
                       height: 30,
                     ),
-                    Container(
-                      // tag: "contactlist" + userprofile["id"].toString(),
-                      child: ClipRRect(
+                    ListTile(
+                      leading: ClipRRect(
                         borderRadius: BorderRadius.circular(100.0),
                         child: FadeInImage(
-                          height: 100,
-                          width: 100,
+                          height: 60,
+                          width: 60,
                           // here `bytes` is a Uint8List containing the bytes for the in-memory image
                           placeholder: AssetImage(
                             "assets/tick.png",
@@ -73,33 +73,33 @@ class QRScreenPage extends State<QRScreen> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                    ),
-                    Text(
-                      userprofile["name"].toString().toUpperCase(),
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green),
-                    ),
-                    Text(
-                      userprofile["contact_no"].toString().toUpperCase(),
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue),
-                    ),
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.edit),
-                      label: Text("Update Profile"),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserProfile(),
-                          ),
-                        );
-                        // _handleLogout();
-                      },
+                      title: Text(
+                        userprofile["name"].toString().toUpperCase(),
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green),
+                      ),
+                      subtitle: Text(
+                        userprofile["contact_no"].toString().toUpperCase(),
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue),
+                      ),
+                      trailing: ElevatedButton.icon(
+                        icon: Icon(Icons.edit),
+                        label: Text("Update"),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UserProfile(),
+                            ),
+                          );
+                          // _handleLogout();
+                        },
+                      ),
                     ),
                     SizedBox(
                       height: 30,
@@ -121,7 +121,7 @@ class QRScreenPage extends State<QRScreen> {
                       userprofile["usercode"].toString(),
                       style:
                           TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-                    )
+                    ),
                   ],
                 ),
               )

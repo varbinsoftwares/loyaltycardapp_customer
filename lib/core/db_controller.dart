@@ -10,12 +10,12 @@ class Dbconnect {
   //static Database? _database;
 
   Future<Database> initializeDB() async {
-    return await openDatabase('ecom.db', version: 1,
+    return await openDatabase('ecom1.db', version: 1,
         onCreate: (Database db, int version) async {
       // When creating the db, create the table
       await db.execute('''CREATE TABLE cart (
             id INTEGER PRIMARY KEY,
-            product_id INTEGER,
+            product_id CHAR(10),
             image CHAR(500),
             title CHAR(100),
             sku CHAR(100),
@@ -38,9 +38,7 @@ class Dbconnect {
     List maps = await db.rawQuery(query);
     if (maps.isEmpty) {
       print("no data");
-      return [
-        {"id": 0}
-      ];
+      return [];
     } else {
       return maps;
     }
@@ -63,6 +61,16 @@ class Dbconnect {
       whereArgs: [primaryKey],
     );
     return updateList;
+  }
+
+  Future<void> deleteTable(String tablename,
+      {required String colname, required String colval}) async {
+    final Database db = await initializeDB();
+    await db.delete(
+      tablename,
+      where: '$colname = ?',
+      whereArgs: [colval],
+    );
   }
 
   String queryCreator(Map inputlist) {

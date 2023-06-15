@@ -260,7 +260,7 @@ class PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
       content: productinfo["description"].toString() +
           "\n\nहमारी LOYALTY PARTNER CARD ऐप अभी डाउनलोड करे\n",
       storelink:
-          "https://play.google.com/store/apps/details?id=com.varbin.loyaltycard&hl=en_IN&gl=US",
+          "https://play.google.com/store/apps/details?id=com.varbin.loyaltycard2&hl=en_IN&gl=US",
     );
     await shareobj.shareLink();
     setState(() {

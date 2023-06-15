@@ -12,8 +12,8 @@ import 'package:loyaltycard/core/uiwidget.dart';
 import 'package:loyaltycard/pages/qrcode.dart';
 
 class MyPoints extends StatefulWidget {
-  const MyPoints({Key? key}) : super(key: key);
-
+  final bool navigation;
+  MyPoints({this.navigation = false});
   //final String title;
 
   @override
@@ -140,6 +140,11 @@ class MyPointsPage extends State<MyPoints> with AutomaticKeepAliveClientMixin {
     final double _screenHeight = MediaQuery.of(context).size.height * 1.0;
     return Scaffold(
         backgroundColor: Colors.blue.shade50,
+        appBar: widget.navigation
+            ? AppBar(
+                title: Text("My Points"),
+              )
+            : null,
         body: RefreshIndicator(
           onRefresh: () => Future.sync(
             () => _getPointList(userprofile['id']),

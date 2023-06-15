@@ -4,9 +4,6 @@ import 'home.dart';
 import 'loader.dart';
 import 'auth/login.dart';
 import 'auth/registration.dart';
-import 'package:loyaltycard/rewards/rewardsceen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'auth/kyc.dart';
 import 'auth/profile.dart';
 
 void main() {

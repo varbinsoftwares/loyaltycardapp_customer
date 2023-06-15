@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.varbin.loyaltycard">
+    package="com.varbin.loyaltycard2">
    <application
         android:label="LOYALTY PARTNER CARD"
         android:name="${applicationName}"
